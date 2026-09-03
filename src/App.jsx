@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Send, Trash2, Bot, User } from 'lucide-react';
 
-const API_URL = 'http://127.0.0.1:8000/api/chat';
+// const API_URL = 'http://127.0.0.1:8000/api/chat';
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/chat';
 
 export default function App() {
   const [messages, setMessages] = useState(() => {
@@ -71,7 +72,7 @@ export default function App() {
             <Bot size={22} />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-slate-800">TemanDengar</h1>
+            <h1 className="text-lg font-bold text-slate-800">SudutTenang</h1>
             <p className="text-xs text-emerald-600 font-medium">● Siap mendengarkanmu</p>
           </div>
         </div>
