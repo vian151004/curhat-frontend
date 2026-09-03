@@ -38,10 +38,18 @@ export default function App() {
         text: msg.text
       }));
 
-      const res = await axios.post(API_URL, {
-        message: userText,
-        history: historyContext.slice(0, -1)
-      });
+      const res = await axios.post(
+        API_URL,
+        {
+          message: userText,
+          history: historyContext.slice(0, -1)
+        },
+        {
+          headers: {
+            'bypass-tunnel-reminder': 'true'
+          }
+        }
+      );
 
       if (res.data && res.data.reply) {
         setMessages(prev => [...prev, { role: 'model', text: res.data.reply }]);
