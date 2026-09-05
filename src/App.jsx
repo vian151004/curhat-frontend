@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Send, Trash2, Bot, User, Paperclip, X, FileText } from 'lucide-react';
 import VoiceInput from './components/VoiceInput';
+import MusicPlayer from './components/MusicPlayer';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/chat';
 
@@ -9,13 +10,16 @@ export default function App() {
   const [messages, setMessages] = useState(() => {
     const saved = localStorage.getItem('curhat_chat_history');
     return saved ? JSON.parse(saved) : [
-      { role: 'model', text: 'Halo! Aku SudutTenang. Ada hal yang lagi bikin kepikiran atau mengganjal di hati hari ini? Cerita aja ya...' }
+      { 
+        role: 'model', 
+        text: 'Halo! Aku SudutTenang. Ada hal yang lagi bikin kepikiran atau mengganjal di hati hari ini? Cerita aja ya...' 
+      }
     ];
   });
 
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [attachedFile, setAttachedFile] = useState(null); // { name, mime_type, data, previewUrl, isImage }
+  const [attachedFile, setAttachedFile] = useState(null);
 
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -25,12 +29,10 @@ export default function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
-  // Handle pemilihan file (gambar / dokumen)
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Batasi ukuran maksimal 10MB
     if (file.size > 10 * 1024 * 1024) {
       alert('Ukuran file maksimal 10MB ya.');
       return;
@@ -39,7 +41,6 @@ export default function App() {
     const reader = new FileReader();
     reader.onload = () => {
       const base64String = reader.result;
-      // Ambil Base64 murni tanpa prefix "data:...;base64,"
       const pureBase64 = base64String.split(',')[1];
       const isImage = file.type.startsWith('image/');
 
@@ -53,7 +54,6 @@ export default function App() {
     };
 
     reader.readAsDataURL(file);
-    // Reset file input agar bisa memilih file yang sama jika dihapus
     e.target.value = '';
   };
 
@@ -68,7 +68,6 @@ export default function App() {
     const userText = input.trim();
     const currentFile = attachedFile;
 
-    // Tambahkan pesan user ke UI
     const userMessageObj = {
       role: 'user',
       text: userText,
@@ -82,7 +81,6 @@ export default function App() {
     const newMessages = [...messages, userMessageObj];
     setMessages(newMessages);
 
-    // Reset input dan file preview seketika
     setInput('');
     setAttachedFile(null);
     setLoading(true);
@@ -138,7 +136,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-slate-100 font-sans">
+    <div className="relative flex flex-col h-screen bg-slate-100 font-sans">
       <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200 shadow-sm">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold">
@@ -177,7 +175,6 @@ export default function App() {
                     : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none'
                 }`}
               >
-                {/* Tampilan file terkirim di bubble chat user */}
                 {msg.filePreview && (
                   <div className="mb-2">
                     {msg.filePreview.isImage ? (
@@ -216,7 +213,6 @@ export default function App() {
 
       <footer className="p-4 bg-white border-t border-slate-200">
         <div className="max-w-2xl mx-auto space-y-2">
-          {/* Kotak Preview Lampiran sebelum dikirim */}
           {attachedFile && (
             <div className="flex items-center gap-2 p-2 bg-slate-50 border border-slate-200 rounded-xl w-fit">
               {attachedFile.isImage ? (
@@ -245,7 +241,6 @@ export default function App() {
           )}
 
           <form onSubmit={handleSend} className="flex items-center gap-2">
-            {/* Input file tersembunyi */}
             <input
               type="file"
               ref={fileInputRef}
@@ -254,7 +249,6 @@ export default function App() {
               className="hidden"
             />
 
-            {/* Tombol Lampiran (Paperclip) */}
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
@@ -291,6 +285,9 @@ export default function App() {
           </form>
         </div>
       </footer>
+
+      {/* Floating Spotify Music Widget */}
+      <MusicPlayer />
     </div>
   );
 }
