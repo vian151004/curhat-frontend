@@ -235,7 +235,7 @@ export default function App() {
               })}
             </ul>
           </div>
-          
+          S
           {/* <div className="bg-white/40 backdrop-blur-md p-4 rounded-2xl border border-white/60 text-[10px] text-gray-500 space-y-1 shrink-0">
              <h4 className="font-bold text-gray-700 text-[11px]">Cari Bantuan Manusia</h4>
              <p className="leading-relaxed">Hubungi kerabat terdekat jika butuh pertolongan profesional.</p>
